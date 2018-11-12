@@ -5,7 +5,7 @@ class Mashed {
     this.initialize();
     this.addEventListeners();
   }
-
+ 
   initialize() {
     // Egenskaper för instanser av den här klassen, används för att referera till samma Node/Element i DOM.
     this.sentinel = document.querySelector('.sentinel');
@@ -21,7 +21,7 @@ class Mashed {
   /**
    * Metod som sätter upp våra eventlyssnare
    */
-  addEventListeners() {
+  addEventListeners(){ 
     // Eventlyssnare för sök-knappen
     this.searchBtn.addEventListener('click', event =>
       this.search(event, this.searchInput.value)
@@ -38,6 +38,7 @@ class Mashed {
     );
   }
 
+  
   /**
    * Metod (används som callback) för att hantera sökningar
    *
@@ -47,29 +48,53 @@ class Mashed {
   search(event, searchString = null) {
     event.preventDefault();
     // Om söksträngen inte är tom och är definierad så ska vi söka
+  
     if (this.checkSearchInput(searchString)) {
       console.log(`Trigga sökning med ${searchString}`);
-
-      // 1) Bygg upp en array med anrop (promise) till fetchFlickrPhotos och fetchWordlabWords med searchString
+// 1) Bygg upp en array med anrop (promise) till fetchFlickrPhotos och fetchWordlabWords med searchString
       // Notera: att ordningen du skickar in dessa i spelar roll i steg 3)
-
+      var requestOne = this.fetchFlickrPhotos(searchString);
+      var requestTwo = this.fetchWordlabWords(searchString);
+      let promiseArray = [requestOne, requestTwo]; 
       // 2) Använd Promise.all för att hantera varje anrop (promise)
-
       // 2 a) then(results) => Om varje anrop lyckas och varje anrop returnerar data
-
+      // 2 b) catch() => Om något anrop misslyckas, visa felmeddelande
+      Promise.all(promiseArray) 
+      .then((res) => {
+        return res.map(response => {
+            if(response.status === 200) {
+            
+                return response.json(); //response görs om till JSON.
+               
+            } else {console.log("Funkar inte!");
+        }  
+        })
+            })
+            .catch((reason) => console.log(reason))
+            .then((res) => {
+              Promise.all(res).then((data) => {
+                this.renderFlickrResults(data)
+                this.renderWordlabResults(data)
+                console.log(data);
+              
+              }) 
+          })
+            .catch(err => console.log(err))
+        }
+      else {
+        console.log(
+          `Söksträngen är tom, visa ett meddelande eller bara returnera`
+        );
+        return;
+      }}
+    
+     
       // 3) För varje resultat i arryen results, visa bilder från FlickR or ord från WordLab.
       // 4 results[0] kommer nu innehålla resultat från FlickR och results[1] resultat från WordLab.
       // 5 skapa element och visa dem i DOM:en med metoderna (renderFlickResults och renderWordlabResults)
 
-      // 2 b) catch() => Om något anrop misslyckas, visa felmeddelande
-
-    } else {
-      console.log(
-        `Söksträngen är tom, visa ett meddelande eller bara returnera`
-      );
-      return;
-    }
-  }
+      
+  
 
   /**
    * Metod som används för att kolla att söksträngen är giltig
@@ -89,7 +114,7 @@ class Mashed {
    * @returns {Promise} Ett fetch() Promise
    */
   fetchFlickrPhotos(searchString) {
-    let flickrAPIkey = ``; // Din API-nyckel här
+    let flickrAPIkey = `f87cf05024c2a7309c4243502d3120ba`; // Din API-nyckel här
     let flickerAPIRootURL = `https://api.flickr.com/services/rest/?`; // Grundläggande delen av Flickr's API URL
 
     // Olika sökparametrar som behövs för Flickr's API. För mer info om detta kolla i Flickrs API-dokumentation
@@ -106,9 +131,8 @@ class Mashed {
    * @returns {Promise} Ett fetch() Promise
    */
   fetchWordlabWords(searchString) {
-    let wordLabAPIkey = ``; // Din API-nyckel här
+    let wordLabAPIkey = `8acdc2138480ba2c4049b500924deb7f`; // Din API-nyckel här
     let wordLabURL = `http://words.bighugelabs.com/api/2/${wordLabAPIkey}/${searchString}/json`;
-
     return fetch(wordLabURL);
   }
 
@@ -117,16 +141,30 @@ class Mashed {
    *
    * @param {Object} data Sökresultaten från Flickr's API.
    */
-  renderFlickrResults(data) {}
+  renderFlickrResults(data) {
+    console.log(data[0]);
+    //skapa element
+  }
 
   /**
    * Metod som skapar ord-element för relaterade sökord som kommer från Wordlabs API
    *
    * @param {Object} data Sökresultaten från Flickr's API.
    */
-  renderWordlabResults(data) {}
+  renderWordlabResults(data) {
+    let dataSecArr = data[1].noun.syn;
+    for (let i=0; i<dataSecArr.length; i++) {
+    let aElem = document.createElement("a");
+    let ulElem = document.getElementById("asideList");
+    let listElem = document.createElement("li");
+    aElem.textContent = dataSecArr[i];
+    aElem.setAttribute('href', "#");
+    listElem.appendChild(aElem);
+    ulElem.appendChild(listElem);   
+    //skapa element
+  } 
+  }
 }
-
 // Immediately-Invoked Function Expression, detta betyder att när JS-filen läses in så körs koden inuti funktionen nedan.
 (function() {
   new Mashed();
