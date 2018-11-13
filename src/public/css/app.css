@@ -244,8 +244,8 @@ th {
 ** <Global Utilities>
 */
 body {
-  background-color: #fff;
-  color: #fff;
+  background-color: white;
+  color:white;
   font-family: 'Avenir Next', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 2.5em; }
 
@@ -255,7 +255,7 @@ body {
   min-height: 100vh; }
 
 header {
-  background-color: slategray;
+  background-color: brown;
   height: 90px;
   display: flex;
   align-items: center;
@@ -271,8 +271,8 @@ main {
   min-height: 100%; }
 
 aside {
-  color: slategray;
-  border: 3px solid slategray;
+  color:white;
+  border: 3px solid black;
   border-left: none;
   flex: 1; }
   aside ul {
@@ -282,18 +282,19 @@ aside {
       display: flex;
       justify-content: center;
       line-height: 90px;
-      border-bottom: 1px solid slategray; }
+      border-bottom: 1px solid darkgrey; }
+    
       aside ul li a {
         width: 100%;
         text-align: center; }
       aside ul li:hover {
-        background-color: slategray; }
+        background-color: lightgrey; }
         aside ul li:hover a {
-          color: #fff;
+          color: white;
           text-decoration: underline; }
 
 .search {
-  border: 3px solid slategray;
+  border: 3px solid black;
   color: slategray;
   min-height: 90px;
   line-height: 90px;
@@ -304,10 +305,10 @@ aside {
     height: 90px;
     text-indent: 30px; }
     .search input::-webkit-input-placeholder {
-      color: #c6cdd3; }
+      color: black; }
   .search button {
     -webkit-appearance: none;
-    background-color: slategray;
+    background-color: brown;
     color: #fff;
     height: 100%;
     position: absolute;
@@ -315,10 +316,10 @@ aside {
     right: -1px;
     top: 0; }
     .search button:hover {
-      background-color: #8d9aa6; }
+      background-color: lightgrey; }
 
 .results {
-  border: 3px solid slategray;
+  border: 3px solid black;
   padding: 10px;
   flex: 2; }
   .results .loader {
@@ -347,8 +348,8 @@ aside {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: gray;
-    color: #fff;
+    background-color: white;
+    color: white;
     font-size: 2.0em;
     font-family: 'AvenirNext-Bold';
     min-height: 550px;
@@ -361,10 +362,32 @@ aside {
       background-color: #8d9aa6; }
 
 footer {
-  background-color: slategray;
+  background-color: brown;
   height: 250px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   text-align: center; }
+
+
+  @media only screen and (max-width: 600px) {
+   
+
+    .search {
+   margin:auto;
+ margin-top:10px;
+      width: 100% }
+   
+
+    .search input {
+      width: calc(100% - 50px);
+      text-indent: 2px;
+    }
+
+    .search button  {
+      width: 80px;
+    }
+   
+
+  }

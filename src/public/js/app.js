@@ -1,11 +1,12 @@
 class Mashed {
   constructor() {
     this.search = this.search.bind(this);
-
     this.initialize();
     this.addEventListeners();
-  }
- 
+  } 
+
+
+
   initialize() {
     // Egenskaper för instanser av den här klassen, används för att referera till samma Node/Element i DOM.
     this.sentinel = document.querySelector('.sentinel');
@@ -17,11 +18,17 @@ class Mashed {
     // Frivilligt: för att visa en laddningsindikator!
     this.loadingIndicator = document.querySelector('.loader');
   }
+  
+
 
   /**
    * Metod som sätter upp våra eventlyssnare
    */
   addEventListeners(){ 
+
+    // this.searchResultsContainer.addEventListener("click", this.cleanPhotoAndList);
+    // this.sidebarWords.forEach(sideEl=>sideEl.addEventListener('click', this.cleanPhotoAndList)); 
+
     // Eventlyssnare för sök-knappen
     this.searchBtn.addEventListener('click', event =>
       this.search(event, this.searchInput.value)
@@ -30,14 +37,25 @@ class Mashed {
     /*
     * Eventlyssnare för alla ord i sidomenyn
     * För mer information om forEach: https://mzl.la/IysHjg
-    */
+    */    
+
+    
+
+
     this.sidebarWords.forEach(wordEl =>
       wordEl.addEventListener('click', event =>
         this.search(event, event.target.textContent)
-      )
+
+   
+,
+     
+
+  
+
+      ) 
     );
   }
-
+ 
   
   /**
    * Metod (används som callback) för att hantera sökningar
@@ -50,6 +68,12 @@ class Mashed {
     // Om söksträngen inte är tom och är definierad så ska vi söka
   
     if (this.checkSearchInput(searchString)) {
+      var list = document.getElementById("resultUl");     
+      list.innerHTML = ""; 
+      var list = document.getElementById("asideList");     
+      list.innerHTML = ""; 
+      
+ 
       console.log(`Trigga sökning med ${searchString}`);
 // 1) Bygg upp en array med anrop (promise) till fetchFlickrPhotos och fetchWordlabWords med searchString
       // Notera: att ordningen du skickar in dessa i spelar roll i steg 3)
@@ -82,8 +106,8 @@ class Mashed {
             .catch(err => console.log(err))
         }
       else {
-        console.log(
-          `Söksträngen är tom, visa ett meddelande eller bara returnera`
+        alert(
+          `Söksträngen är tom!`
         );
         return;
       }}
@@ -94,7 +118,7 @@ class Mashed {
       // 5 skapa element och visa dem i DOM:en med metoderna (renderFlickResults och renderWordlabResults)
 
       
-  
+      
 
   /**
    * Metod som används för att kolla att söksträngen är giltig
@@ -123,7 +147,7 @@ class Mashed {
 
     return fetch(flickrURL);
   }
-
+ 
   /**
    * Metod som används för att göra API-anrop till wordlab API:et för att få förslag på andra söktermer
    *
@@ -144,8 +168,7 @@ class Mashed {
   renderFlickrResults(data) {
     let dataFirstArr = data[0].photos.photo;
     console.log(dataFirstArr);
-    for (let j=0; j<dataFirstArr.length; j++) {
-      console.log(dataFirstArr);
+    for (let j=0; j<30; j++) {
       let aElement = document.createElement("a");
       aElement.setAttribute('href', dataFirstArr[j].url_q);
 let liElement = document.createElement("li");
@@ -169,19 +192,27 @@ aElement.appendChild(imageElement);
    */
   renderWordlabResults(data) {
     let dataSecArr = data[1].noun.syn;
-    for (let i=0; i<dataSecArr.length; i++) {
+    console.log(dataSecArr);
+    for (let i=0; i<10; i++) {
+      if(i<10) { 
     let aElem = document.createElement("a");
     let ulElem = document.getElementById("asideList");
     let listElem = document.createElement("li");
     aElem.textContent = dataSecArr[i];
     aElem.setAttribute('href', "searchString");
     listElem.appendChild(aElem);
-    ulElem.appendChild(listElem);   
+    ulElem.appendChild(listElem);  } 
+    
     //skapa element
-  } 
+  }
   }
 }
+
+
+
+
+
 // Immediately-Invoked Function Expression, detta betyder att när JS-filen läses in så körs koden inuti funktionen nedan.
 (function() {
   new Mashed();
-})();
+})(); 
