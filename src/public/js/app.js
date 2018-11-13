@@ -3,60 +3,44 @@ class Mashed {
     this.search = this.search.bind(this);
     this.initialize();
     this.addEventListeners();
-  } 
-
-
+  }
 
   initialize() {
     // Egenskaper för instanser av den här klassen, används för att referera till samma Node/Element i DOM.
-    this.sentinel = document.querySelector('.sentinel');
-    this.searchInput = document.querySelector('.search input');
-    this.searchBtn = document.querySelector('.search button');
-    this.sidebarWords = document.querySelectorAll('aside ul');
-    this.searchResultsContainer = document.querySelector('.results ul');
+    this.sentinel = document.querySelector(".sentinel");
+    this.searchInput = document.querySelector(".search input");
+    this.searchBtn = document.querySelector(".search button");
+    this.sidebarWords = document.querySelectorAll("aside ul");
+    this.searchResultsContainer = document.querySelector(".results ul");
 
     // Frivilligt: för att visa en laddningsindikator!
-    this.loadingIndicator = document.querySelector('.loader');
+    this.loadingIndicator = document.querySelector(".loader");
   }
-  
-
 
   /**
    * Metod som sätter upp våra eventlyssnare
    */
-  addEventListeners(){ 
-
+  addEventListeners() {
     // this.searchResultsContainer.addEventListener("click", this.cleanPhotoAndList);
-    // this.sidebarWords.forEach(sideEl=>sideEl.addEventListener('click', this.cleanPhotoAndList)); 
+    // this.sidebarWords.forEach(sideEl=>sideEl.addEventListener('click', this.cleanPhotoAndList));
 
     // Eventlyssnare för sök-knappen
-    this.searchBtn.addEventListener('click', event =>
+    this.searchBtn.addEventListener("click", event =>
       this.search(event, this.searchInput.value)
     );
 
     /*
-    * Eventlyssnare för alla ord i sidomenyn
-    * För mer information om forEach: https://mzl.la/IysHjg
-    */    
-
-    
-
+     * Eventlyssnare för alla ord i sidomenyn
+     * För mer information om forEach: https://mzl.la/IysHjg
+     */
 
     this.sidebarWords.forEach(wordEl =>
-      wordEl.addEventListener('click', event =>
+      wordEl.addEventListener("click", event =>
         this.search(event, event.target.textContent)
-
-   
-,
-     
-
-  
-
-      ) 
+      )
     );
   }
- 
-  
+
   /**
    * Metod (används som callback) för att hantera sökningar
    *
@@ -66,59 +50,50 @@ class Mashed {
   search(event, searchString = null) {
     event.preventDefault();
     // Om söksträngen inte är tom och är definierad så ska vi söka
-  
+
     if (this.checkSearchInput(searchString)) {
-      var list = document.getElementById("resultUl");     
-      list.innerHTML = ""; 
-      var list = document.getElementById("asideList");     
-      list.innerHTML = ""; 
-      
- 
+      var list = document.getElementById("resultUl");
+      list.innerHTML = "";
+      var list = document.getElementById("asideList");
+      list.innerHTML = "";
+
       console.log(`Trigga sökning med ${searchString}`);
-// 1) Bygg upp en array med anrop (promise) till fetchFlickrPhotos och fetchWordlabWords med searchString
+      // 1) Bygg upp en array med anrop (promise) till fetchFlickrPhotos och fetchWordlabWords med searchString
       // Notera: att ordningen du skickar in dessa i spelar roll i steg 3)
       var requestOne = this.fetchFlickrPhotos(searchString);
       var requestTwo = this.fetchWordlabWords(searchString);
-      let promiseArray = [requestOne, requestTwo]; 
+      let promiseArray = [requestOne, requestTwo];
       // 2) Använd Promise.all för att hantera varje anrop (promise)
       // 2 a) then(results) => Om varje anrop lyckas och varje anrop returnerar data
       // 2 b) catch() => Om något anrop misslyckas, visa felmeddelande
-      Promise.all(promiseArray) 
-      .then((res) => {
-        return res.map(response => {
-            if(response.status === 200) {
-            
-                return response.json(); //response görs om till JSON.
-               
-            } else {console.log("Funkar inte!");
-        }  
+      Promise.all(promiseArray)
+        .then(res => {
+          return res.map(response => {
+            if (response.status === 200) {
+              return response.json(); //response görs om till JSON.
+            } else {
+              console.log("Funkar inte!");
+            }
+          });
         })
-            })
-            .catch((reason) => console.log(reason))
-            .then((res) => {
-              Promise.all(res).then((data) => {
-                this.renderFlickrResults(data)
-                this.renderWordlabResults(data)
-                console.log(data);
-              
-              }) 
-          })
-            .catch(err => console.log(err))
-        }
-      else {
-        alert(
-          `Söksträngen är tom!`
-        );
-        return;
-      }}
-    
-     
-      // 3) För varje resultat i arryen results, visa bilder från FlickR or ord från WordLab.
-      // 4 results[0] kommer nu innehålla resultat från FlickR och results[1] resultat från WordLab.
-      // 5 skapa element och visa dem i DOM:en med metoderna (renderFlickResults och renderWordlabResults)
+        .catch(reason => console.log(reason))
+        .then(res => {
+          Promise.all(res).then(data => {
+            this.renderFlickrResults(data);
+            this.renderWordlabResults(data);
+            console.log(data);
+          });
+        })
+        .catch(err => console.log(err));
+    } else {
+      alert(`Söksträngen är tom!`);
+      return;
+    }
+  }
 
-      
-      
+  // 3) För varje resultat i arryen results, visa bilder från FlickR or ord från WordLab.
+  // 4 results[0] kommer nu innehålla resultat från FlickR och results[1] resultat från WordLab.
+  // 5 skapa element och visa dem i DOM:en med metoderna (renderFlickResults och renderWordlabResults)
 
   /**
    * Metod som används för att kolla att söksträngen är giltig
@@ -147,7 +122,7 @@ class Mashed {
 
     return fetch(flickrURL);
   }
- 
+
   /**
    * Metod som används för att göra API-anrop till wordlab API:et för att få förslag på andra söktermer
    *
@@ -168,22 +143,21 @@ class Mashed {
   renderFlickrResults(data) {
     let dataFirstArr = data[0].photos.photo;
     console.log(dataFirstArr);
-    for (let j=0; j<30; j++) {
+    for (let j = 0; j < 30; j++) {
       let aElement = document.createElement("a");
-      aElement.setAttribute('href', dataFirstArr[j].url_q);
-let liElement = document.createElement("li");
-let ulElement = document.getElementById("resultUl");
-let imageElement = document.createElement('img'); // use DOM HTMLImageElement
-imageElement.alt = dataFirstArr[j].title;
-imageElement.title= dataFirstArr[j].title;
-// let image = document.createElement('img');
-imageElement.src = dataFirstArr[j].url_q; //'image2.jpg';
-liElement.appendChild(aElement);
-aElement.appendChild(imageElement);
-    //  liElement.appendChild(imageElement);
-    ulElement.appendChild(liElement); 
-    //skapa element
-  }}
+      aElement.setAttribute("href", dataFirstArr[j].url_q);
+      aElement.setAttribute("target", "_blank");
+      let liElement = document.createElement("li");
+      let ulElement = document.getElementById("resultUl");
+      let imageElement = document.createElement("img");
+      imageElement.alt = dataFirstArr[j].title;
+      imageElement.title = dataFirstArr[j].title;
+      imageElement.src = dataFirstArr[j].url_q; 
+      liElement.appendChild(aElement);
+      aElement.appendChild(imageElement);
+      ulElement.appendChild(liElement);
+    }
+  }
 
   /**
    * Metod som skapar ord-element för relaterade sökord som kommer från Wordlabs API
@@ -193,26 +167,21 @@ aElement.appendChild(imageElement);
   renderWordlabResults(data) {
     let dataSecArr = data[1].noun.syn;
     console.log(dataSecArr);
-    for (let i=0; i<10; i++) {
-      if(i<10) { 
-    let aElem = document.createElement("a");
-    let ulElem = document.getElementById("asideList");
-    let listElem = document.createElement("li");
-    aElem.textContent = dataSecArr[i];
-    aElem.setAttribute('href', "searchString");
-    listElem.appendChild(aElem);
-    ulElem.appendChild(listElem);  } 
-    
-    //skapa element
-  }
+    for (let i = 0; i < 10; i++) {
+      if (i < 10) {
+        let aElem = document.createElement("a");
+        let ulElem = document.getElementById("asideList");
+        let listElem = document.createElement("li");
+        aElem.textContent = dataSecArr[i];
+        aElem.setAttribute("href", "");
+        listElem.appendChild(aElem);
+        ulElem.appendChild(listElem);
+      }
+    }
   }
 }
-
-
-
-
 
 // Immediately-Invoked Function Expression, detta betyder att när JS-filen läses in så körs koden inuti funktionen nedan.
 (function() {
   new Mashed();
-})(); 
+})();
