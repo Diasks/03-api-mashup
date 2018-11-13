@@ -142,9 +142,25 @@ class Mashed {
    * @param {Object} data Sökresultaten från Flickr's API.
    */
   renderFlickrResults(data) {
-    console.log(data[0]);
+    let dataFirstArr = data[0].photos.photo;
+    console.log(dataFirstArr);
+    for (let j=0; j<dataFirstArr.length; j++) {
+      console.log(dataFirstArr);
+      let aElement = document.createElement("a");
+      aElement.setAttribute('href', dataFirstArr[j].url_q);
+let liElement = document.createElement("li");
+let ulElement = document.getElementById("resultUl");
+let imageElement = document.createElement('img'); // use DOM HTMLImageElement
+imageElement.alt = dataFirstArr[j].title;
+imageElement.title= dataFirstArr[j].title;
+// let image = document.createElement('img');
+imageElement.src = dataFirstArr[j].url_q; //'image2.jpg';
+liElement.appendChild(aElement);
+aElement.appendChild(imageElement);
+    //  liElement.appendChild(imageElement);
+    ulElement.appendChild(liElement); 
     //skapa element
-  }
+  }}
 
   /**
    * Metod som skapar ord-element för relaterade sökord som kommer från Wordlabs API
@@ -158,7 +174,7 @@ class Mashed {
     let ulElem = document.getElementById("asideList");
     let listElem = document.createElement("li");
     aElem.textContent = dataSecArr[i];
-    aElem.setAttribute('href', "#");
+    aElem.setAttribute('href', "searchString");
     listElem.appendChild(aElem);
     ulElem.appendChild(listElem);   
     //skapa element
