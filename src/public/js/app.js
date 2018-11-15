@@ -11,8 +11,9 @@ class Mashed {
     this.searchInput = document.querySelector(".search input");
     this.searchBtn = document.querySelector(".search button");
     this.sidebarWords = document.querySelectorAll("aside ul");
-    this.searchResultsContainer = document.querySelector(".results ul");
-
+    // this.searchResultsContainer = document.querySelector(".results ul");
+    this.listPhoto = document.getElementById("resultUl");
+    this.listWord = document.getElementById("asideList");
     // Frivilligt: för att visa en laddningsindikator!
     this.loadingIndicator = document.querySelector(".loader");
   }
@@ -52,10 +53,10 @@ class Mashed {
     // Om söksträngen inte är tom och är definierad så ska vi söka
 
     if (this.checkSearchInput(searchString)) {
-      var list = document.getElementById("resultUl");
-      list.innerHTML = "";
-      var list = document.getElementById("asideList");
-      list.innerHTML = "";
+      // var list = document.getElementById("resultUl");
+      this.listPhoto.innerHTML = "";
+      // var list = document.getElementById("asideList");
+      this.listWord.innerHTML = "";
 
       console.log(`Trigga sökning med ${searchString}`);
       // 1) Bygg upp en array med anrop (promise) till fetchFlickrPhotos och fetchWordlabWords med searchString
@@ -152,7 +153,7 @@ class Mashed {
       let imageElement = document.createElement("img");
       imageElement.alt = dataFirstArr[j].title;
       imageElement.title = dataFirstArr[j].title;
-      imageElement.src = dataFirstArr[j].url_q; 
+      imageElement.src = dataFirstArr[j].url_q;
       liElement.appendChild(aElement);
       aElement.appendChild(imageElement);
       ulElement.appendChild(liElement);
@@ -167,7 +168,7 @@ class Mashed {
   renderWordlabResults(data) {
     let dataSecArr = data[1].noun.syn;
     console.log(dataSecArr);
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < dataSecArr.length; i++) {
       if (i < 10) {
         let aElem = document.createElement("a");
         let ulElem = document.getElementById("asideList");
