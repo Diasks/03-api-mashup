@@ -11,7 +11,6 @@ class Mashed {
     this.searchInput = document.querySelector(".search input");
     this.searchBtn = document.querySelector(".search button");
     this.sidebarWords = document.querySelectorAll("aside ul");
-    // this.searchResultsContainer = document.querySelector(".results ul");
     this.listPhoto = document.getElementById("resultUl");
     this.listWord = document.getElementById("asideList");
     // Frivilligt: för att visa en laddningsindikator!
@@ -22,9 +21,7 @@ class Mashed {
    * Metod som sätter upp våra eventlyssnare
    */
   addEventListeners() {
-    // this.searchResultsContainer.addEventListener("click", this.cleanPhotoAndList);
-    // this.sidebarWords.forEach(sideEl=>sideEl.addEventListener('click', this.cleanPhotoAndList));
-
+  
     // Eventlyssnare för sök-knappen
     this.searchBtn.addEventListener("click", event =>
       this.search(event, this.searchInput.value)
@@ -53,9 +50,8 @@ class Mashed {
     // Om söksträngen inte är tom och är definierad så ska vi söka
 
     if (this.checkSearchInput(searchString)) {
-      // var list = document.getElementById("resultUl");
+  
       this.listPhoto.innerHTML = "";
-      // var list = document.getElementById("asideList");
       this.listWord.innerHTML = "";
 
       console.log(`Trigga sökning med ${searchString}`);
