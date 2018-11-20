@@ -60,18 +60,14 @@ class Mashed {
           return res.map(response => {
             if (response.status === 200) {
               return response.json(); //response görs om till JSON.
-            } else {
-              alert("Funkar inte!");
-            }
-          });
-        })
+            }});
+        }).catch(error => alert(error))
         .then(res => {
           Promise.all(res).then(data => {
             this.renderFlickrResults(data);
             this.renderWordlabResults(data);
           });
-        })
-        .catch(err => alert(err));
+        }).catch(err => alert(err));
     } else {
       alert(`Söksträngen är tom!`);
       return;
