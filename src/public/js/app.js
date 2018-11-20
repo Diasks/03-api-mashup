@@ -7,21 +7,17 @@ class Mashed {
 
   initialize() {
     // Egenskaper för instanser av den här klassen, används för att referera till samma Node/Element i DOM.
-    this.sentinel = document.querySelector(".sentinel");
     this.searchInput = document.querySelector(".search input");
     this.searchBtn = document.querySelector(".search button");
     this.sidebarWords = document.querySelectorAll("aside ul");
     this.listPhoto = document.getElementById("resultUl");
     this.listWord = document.getElementById("asideList");
-    // Frivilligt: för att visa en laddningsindikator!
-    this.loadingIndicator = document.querySelector(".loader");
   }
 
   /**
    * Metod som sätter upp våra eventlyssnare
    */
   addEventListeners() {
-  
     // Eventlyssnare för sök-knappen
     this.searchBtn.addEventListener("click", event =>
       this.search(event, this.searchInput.value)
@@ -50,26 +46,22 @@ class Mashed {
     // Om söksträngen inte är tom och är definierad så ska vi söka
 
     if (this.checkSearchInput(searchString)) {
-  
+      //Söker efter det användaren skrev in, rensar tidigare sökresultat.
       this.listPhoto.innerHTML = "";
       this.listWord.innerHTML = "";
-
-      console.log(`Trigga sökning med ${searchString}`);
-      // 1) Bygg upp en array med anrop (promise) till fetchFlickrPhotos och fetchWordlabWords med searchString
-      // Notera: att ordningen du skickar in dessa i spelar roll i steg 3)
-      var requestOne = this.fetchFlickrPhotos(searchString);
-      var requestTwo = this.fetchWordlabWords(searchString);
+      // Bygger upp en array med anrop (promise) till fetchFlickrPhotos och fetchWordlabWords med searchString
+      let requestOne = this.fetchFlickrPhotos(searchString);
+      let requestTwo = this.fetchWordlabWords(searchString);
       let promiseArray = [requestOne, requestTwo];
-      // 2) Använd Promise.all för att hantera varje anrop (promise)
-      // 2 a) then(results) => Om varje anrop lyckas och varje anrop returnerar data
-      // 2 b) catch() => Om något anrop misslyckas, visa felmeddelande
+      // Använder Promise.all för att hantera varje anrop,then(results) => Om varje anrop lyckas och varje anrop returnerar data
+      // catch() => Om något anrop misslyckas, visa felmeddelande
       Promise.all(promiseArray)
         .then(res => {
           return res.map(response => {
             if (response.status === 200) {
               return response.json(); //response görs om till JSON.
             } else {
-              console.log("Funkar inte!");
+              alert("Funkar inte!");
             }
           });
         })
@@ -78,7 +70,6 @@ class Mashed {
           Promise.all(res).then(data => {
             this.renderFlickrResults(data);
             this.renderWordlabResults(data);
-            console.log(data);
           });
         })
         .catch(err => console.log(err));
@@ -87,10 +78,6 @@ class Mashed {
       return;
     }
   }
-
-  // 3) För varje resultat i arryen results, visa bilder från FlickR or ord från WordLab.
-  // 4 results[0] kommer nu innehålla resultat från FlickR och results[1] resultat från WordLab.
-  // 5 skapa element och visa dem i DOM:en med metoderna (renderFlickResults och renderWordlabResults)
 
   /**
    * Metod som används för att kolla att söksträngen är giltig
@@ -137,10 +124,11 @@ class Mashed {
    *
    * @param {Object} data Sökresultaten från Flickr's API.
    */
+  // hämta min data, ta den specifika datan jag är ute efter, lägg den i en array.
+  // skapa element baserat på antalet bilder från sökresultatet (men max 32 bilder) och lägg till dom i DOM:en.
   renderFlickrResults(data) {
     let dataFirstArr = data[0].photos.photo;
-    console.log(dataFirstArr);
-    for (let j = 0; j < 30; j++) {
+    for (let j = 0; j < 32; j++) {
       let aElement = document.createElement("a");
       aElement.setAttribute("href", dataFirstArr[j].url_q);
       aElement.setAttribute("target", "_blank");
@@ -161,11 +149,12 @@ class Mashed {
    *
    * @param {Object} data Sökresultaten från Flickr's API.
    */
+  // hämta min data, ta den specifika datan jag är ute efter, lägg den i en array.
+  // skapa element baserat på antalet sökord från sökresultatet och lägg till dom i DOM:en.
   renderWordlabResults(data) {
     let dataSecArr = data[1].noun.syn;
-    console.log(dataSecArr);
     for (let i = 0; i < dataSecArr.length; i++) {
-      if (i < 10) {
+      if (i < 15) {
         let aElem = document.createElement("a");
         let ulElem = document.getElementById("asideList");
         let listElem = document.createElement("li");

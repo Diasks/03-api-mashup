@@ -495,4 +495,9 @@ footer {
     padding: 0px;
     order: 2;
   }
+
+  #resultUl {
+    margin-bottom:0px;
+    background-color: lightgrey;
+  }
 }
