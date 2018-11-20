@@ -65,14 +65,13 @@ class Mashed {
             }
           });
         })
-        .catch(reason => console.log(reason))
         .then(res => {
           Promise.all(res).then(data => {
             this.renderFlickrResults(data);
             this.renderWordlabResults(data);
           });
         })
-        .catch(err => console.log(err));
+        .catch(err => alert(err));
     } else {
       alert(`Söksträngen är tom!`);
       return;
