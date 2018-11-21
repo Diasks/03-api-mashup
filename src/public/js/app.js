@@ -61,13 +61,13 @@ class Mashed {
             if (response.status === 200) {
               return response.json(); //response görs om till JSON.
             }});
-        }).catch(error => alert(error))
+        }).catch(error => console.log("fel", error))
         .then(res => {
           Promise.all(res).then(data => {
             this.renderFlickrResults(data);
             this.renderWordlabResults(data);
           });
-        }).catch(err => alert(err));
+        }).catch(err => console.log("fel", err));
     } else {
       alert(`Söksträngen är tom!`);
       return;
@@ -96,7 +96,7 @@ class Mashed {
     let flickerAPIRootURL = `https://api.flickr.com/services/rest/?`; // Grundläggande delen av Flickr's API URL
 
     // Olika sökparametrar som behövs för Flickr's API. För mer info om detta kolla i Flickrs API-dokumentation
-    let flickrQueryParams = `&method=flickr.photos.search&api_key=${flickrAPIkey}&text=searchString&extras=url_q, url_o, url_m&format=json&tags=${searchString}&license=2,3,4,5,6,9&sort=relevance&parse_tags=1&nojsoncallback=1`;
+    let flickrQueryParams = `&method=flickr.photos.search&api_key=${flickrAPIkey}&text=searchString&per_page=32&extras=url_q, url_o, url_m&format=json&tags=${searchString}&license=2,3,4,5,6,9&sort=relevance&parse_tags=1&nojsoncallback=1`;
     let flickrURL = `${flickerAPIRootURL}${flickrQueryParams}`;
 
     return fetch(flickrURL);
@@ -122,8 +122,9 @@ class Mashed {
   // hämta min data, ta den specifika datan jag är ute efter, lägg den i en array.
   // skapa element baserat på antalet bilder från sökresultatet (men max 32 bilder) och lägg till dom i DOM:en.
   renderFlickrResults(data) {
+    //console.log(data[0].photos.photo);
     let dataFirstArr = data[0].photos.photo;
-    for (let j = 0; j < 32; j++) {
+    for (let j = 0; j < dataFirstArr.length; j++) {
       let aElement = document.createElement("a");
       aElement.setAttribute("href", dataFirstArr[j].url_q);
       aElement.setAttribute("target", "_blank");
@@ -149,7 +150,7 @@ class Mashed {
   renderWordlabResults(data) {
     let dataSecArr = data[1].noun.syn;
     for (let i = 0; i < dataSecArr.length; i++) {
-      if (i < 15) {
+      if (i < 15) { 
         let aElem = document.createElement("a");
         let ulElem = document.getElementById("asideList");
         let listElem = document.createElement("li");
