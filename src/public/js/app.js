@@ -9,7 +9,6 @@ class Mashed {
     // Egenskaper för instanser av den här klassen, används för att referera till samma Node/Element i DOM.
     this.searchInput = document.querySelector(".search input");
     this.searchBtn = document.querySelector(".search button");
-    this.sidebarWords = document.querySelectorAll("aside ul");
     this.listPhoto = document.getElementById("resultUl");
     this.listWord = document.getElementById("asideList");
   }
@@ -28,11 +27,9 @@ class Mashed {
      * För mer information om forEach: https://mzl.la/IysHjg
      */
 
-    this.sidebarWords.forEach(wordEl =>
-      wordEl.addEventListener("click", event =>
+    this.listWord.addEventListener("click", event =>
         this.search(event, event.target.textContent)
-      )
-    );
+      );
   }
 
   /**
@@ -60,14 +57,17 @@ class Mashed {
           return res.map(response => {
             if (response.status === 200) {
               return response.json(); //response görs om till JSON.
-            }});
-        }).catch(error => console.log("fel", error))
+            }
+          });
+        })
+        .catch(error => console.log("fel", error))
         .then(res => {
           Promise.all(res).then(data => {
             this.renderFlickrResults(data);
             this.renderWordlabResults(data);
           });
-        }).catch(err => console.log("fel", err));
+        })
+        .catch(err => console.log("fel", err));
     } else {
       alert(`Söksträngen är tom!`);
       return;
@@ -150,7 +150,7 @@ class Mashed {
   renderWordlabResults(data) {
     let dataSecArr = data[1].noun.syn;
     for (let i = 0; i < dataSecArr.length; i++) {
-      if (i < 15) { 
+      if (i < 15) {
         let aElem = document.createElement("a");
         let ulElem = document.getElementById("asideList");
         let listElem = document.createElement("li");
