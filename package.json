@@ -10,7 +10,7 @@
     "autoprefixer": "postcss -u autoprefixer -r src/public/css/*"
   },
   "dependencies": {
-    "node-sass": "^4.7.2"
+    "node-sass": "^4.13.1"
   },
   "devDependencies": {
     "autoprefixer": "^9.3.1",
